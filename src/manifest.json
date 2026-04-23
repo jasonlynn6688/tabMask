@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Tab Mask",
+  "version": "0.1.0",
+  "description": "Mask the current browser tab title with a custom name.",
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Tab Mask",
+    "default_popup": "popup.html"
+  }
+}

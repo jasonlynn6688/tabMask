@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>标签页重命名</title>
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+  <body>
+    <main class="popup">
+      <!-- Header -->
+      <div class="header">
+        <span class="header-icon">🏷️</span>
+        <div>
+          <div class="header-title">标签页重命名</div>
+          <div class="header-sub">自定义标签页名称，让浏览更高效</div>
+        </div>
+      </div>
+
+      <!-- Current tab -->
+      <div class="section-label">当前标签页</div>
+      <div class="tab-card">
+        <img id="tabFavicon" class="tab-favicon" alt="" />
+        <div class="tab-info">
+          <div id="tabName" class="tab-name">—</div>
+          <div id="tabUrl" class="tab-url">—</div>
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div class="field-row">
+        <span class="section-label" style="margin-bottom:0">标签名称</span>
+        <span id="charCount" class="char-count">0 / 30</span>
+      </div>
+      <input id="maskTitle" type="text" maxlength="30" placeholder="输入新名称" autocomplete="off" />
+
+      <!-- History -->
+      <div class="history-row" id="historyRow">
+        <span class="row-icon">⏱</span>
+        <span id="historyTitle" class="history-title"></span>
+        <span class="row-time">上次使用</span>
+        <button id="historyApplyBtn" class="row-action-btn" title="应用此名称">↩</button>
+      </div>
+
+      <!-- Smart suggestions -->
+      <div class="suggest-row" id="suggestRow">
+        <span class="row-icon">💡</span>
+        <span id="suggestText" class="suggest-text"></span>
+        <button id="suggestApplyBtn" class="suggest-apply-btn">一键应用 ›</button>
+      </div>
+
+      <!-- Bottom actions -->
+      <div class="actions">
+        <button id="restoreButton" class="action-btn action-restore">↺ 恢复默认</button>
+        <button id="applyButton" class="action-btn action-apply">✓ 应用更改</button>
+      </div>
+    </main>
+    <script type="module" src="./popup.js"></script>
+  </body>
+</html>
