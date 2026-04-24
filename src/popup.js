@@ -20,6 +20,7 @@ const suggestText = document.querySelector("#suggestText");
 const suggestApplyBtn = document.querySelector("#suggestApplyBtn");
 const applyButton = document.querySelector("#applyButton");
 const restoreButton = document.querySelector("#restoreButton");
+const errorMsg = document.querySelector("#errorMsg");
 
 // ── State ──
 let activeTabSupported = false;
@@ -31,6 +32,16 @@ let currentSuggestions = [];
 // ── UI sync ──
 function syncCharCount() {
   charCount.textContent = `${maskTitleInput.value.length} / 30`;
+}
+
+function showError(msg) {
+  errorMsg.textContent = msg;
+  errorMsg.classList.add("visible");
+}
+
+function clearError() {
+  errorMsg.textContent = "";
+  errorMsg.classList.remove("visible");
 }
 
 function syncActionButtons() {
@@ -108,6 +119,7 @@ async function applyMaskTitle() {
   const maskTitle = sanitizeMaskTitle(maskTitleInput.value);
   if (!maskTitle || !currentTab?.id) return;
 
+  clearError();
   applyButton.disabled = true;
 
   try {
@@ -118,9 +130,16 @@ async function applyMaskTitle() {
       maskTitle,
     });
 
+    if (response?.type === "ERROR") {
+      showError(response.message || "应用失败，请重试。");
+      return;
+    }
+
     if (shouldAutoCloseAfterApply(response)) {
       window.close();
     }
+  } catch (err) {
+    showError(err instanceof Error ? err.message : "应用失败，请重试。");
   } finally {
     syncActionButtons();
   }
@@ -128,11 +147,14 @@ async function applyMaskTitle() {
 
 async function restoreMask() {
   if (!currentTab?.id) return;
+  clearError();
   restoreButton.disabled = true;
 
   try {
     await chrome.runtime.sendMessage({ type: "CLEAR_MASK", tabId: currentTab.id });
     restoreAvailable = false;
+  } catch (err) {
+    showError(err instanceof Error ? err.message : "恢复失败，请重试。");
   } finally {
     syncActionButtons();
   }

@@ -38,15 +38,6 @@ async function ensureContentScriptInjected(tabId) {
   });
 }
 
-async function primeTabTitle(tabId, maskTitle) {
-  await chrome.scripting.executeScript({
-    target: { tabId },
-    func: (nextTitle) => {
-      document.title = nextTitle;
-    },
-    args: [maskTitle],
-  });
-}
 
 async function notifyTabWithRetry(tabId, message) {
   const firstTry = await notifyTab(tabId, message, {
@@ -130,7 +121,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         await setRecentMaskTitle(rule.maskTitle);
         try {
           await ensureContentScriptInjected(message.tabId);
-          await primeTabTitle(message.tabId, rule.maskTitle);
         } catch (error) {
           await clearMaskRule(message.tabId);
           throw error;
@@ -208,7 +198,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
     try {
       await ensureContentScriptInjected(tabId);
-      await primeTabTitle(tabId, refreshedRule.maskTitle);
       await notifyTabWithRetry(tabId, {
         type: MESSAGE_TYPES.MASK_TITLE_UPDATED,
         rule: refreshedRule,
