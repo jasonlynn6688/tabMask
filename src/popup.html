@@ -3,61 +3,91 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>标签页重命名</title>
+    <title>tabMask</title>
     <link rel="stylesheet" href="./popup.css" />
   </head>
   <body>
     <main class="popup">
-      <!-- Header -->
-      <div class="header">
-        <span class="header-icon">🏷️</span>
-        <div>
-          <div class="header-title">标签页重命名</div>
-          <div class="header-sub">自定义标签页名称，让浏览更高效</div>
+
+      <!-- Context row: slim line, not a big card -->
+      <div class="ctx-row" id="contextRow">
+        <img id="tabFavicon" class="ctx-favicon" alt="" />
+        <span id="tabName" class="ctx-title"></span>
+        <span class="ctx-dot">·</span>
+        <span id="tabDomain" class="ctx-domain mono"></span>
+        <span id="maskedBadge" class="ctx-badge hidden">MASKED</span>
+      </div>
+
+      <!-- Hero input: the only anchor -->
+      <div class="hero">
+        <div class="hero-label">
+          <div class="label-left">
+            <svg class="label-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.5 13.5l-7 7a2 2 0 01-2.8 0L3 13V3h10l7.5 7.5a2 2 0 010 3z"/>
+              <circle cx="7.5" cy="7.5" r="1.5" fill="currentColor"/>
+            </svg>
+            <span>自定义标签名</span>
+          </div>
+          <span id="charCount" class="hero-count mono">0/30</span>
+        </div>
+
+        <div class="input-wrap" id="inputWrap">
+          <input
+            id="maskTitle"
+            type="text"
+            maxlength="30"
+            placeholder="输入显示给自己看的名字…"
+            autocomplete="off"
+          />
+          <button id="applyButton" class="inline-apply" disabled>
+            应用
+            <kbd>↵</kbd>
+          </button>
+        </div>
+
+        <div class="preview-row">
+          <span class="mono preview-label">预览 →</span>
+          <span class="mini-tab" id="miniTabPreview">
+            <span class="mini-favicon" id="miniFavicon"></span>
+            <span id="previewTitle" class="mini-title"></span>
+          </span>
         </div>
       </div>
 
-      <!-- Current tab -->
-      <div class="section-label">当前标签页</div>
-      <div class="tab-card">
-        <img id="tabFavicon" class="tab-favicon" alt="" />
-        <div class="tab-info">
-          <div id="tabName" class="tab-name">—</div>
-          <div id="tabUrl" class="tab-url">—</div>
+      <!-- Chips: history + suggestions merged -->
+      <div class="chips-section">
+        <div class="chips-header">
+          <span class="chips-label">最近 &amp; 建议</span>
+          <span class="mono chips-hint"><kbd>⌘1–9</kbd> 快选</span>
+        </div>
+        <div class="chips" id="chipsContainer"></div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <div class="footer-hints mono">
+          <span class="hint-item"><kbd>↵</kbd> 应用</span>
+          <span class="hint-item"><kbd>Esc</kbd> 清空</span>
+        </div>
+        <div id="footerRight">
+          <button id="restoreButton" class="restore-btn hidden">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a7 7 0 017-7h7a5 5 0 010 10h-8"/><path d="M7 8L3 12l4 4"/>
+            </svg>
+            恢复原标题
+          </button>
+          <span id="versionLabel" class="version-label mono">tabMask</span>
         </div>
       </div>
 
-      <!-- Input -->
-      <div class="field-row">
-        <span class="section-label" style="margin-bottom:0">标签名称</span>
-        <span id="charCount" class="char-count">0 / 30</span>
-      </div>
-      <input id="maskTitle" type="text" maxlength="30" placeholder="输入新名称" autocomplete="off" />
-
-      <!-- History -->
-      <div class="history-row" id="historyRow">
-        <span class="row-icon">⏱</span>
-        <span id="historyTitle" class="history-title"></span>
-        <span class="row-time">上次使用</span>
-        <button id="historyApplyBtn" class="row-action-btn" title="应用此名称">↩</button>
-      </div>
-
-      <!-- Smart suggestions -->
-      <div class="suggest-row" id="suggestRow">
-        <span class="row-icon">💡</span>
-        <span id="suggestText" class="suggest-text"></span>
-        <button id="suggestApplyBtn" class="suggest-apply-btn">一键应用 ›</button>
-      </div>
-
-      <!-- Error message -->
-      <p id="errorMsg" class="error-msg"></p>
-
-      <!-- Bottom actions -->
-      <div class="actions">
-        <button id="restoreButton" class="action-btn action-restore">↺ 恢复默认</button>
-        <button id="applyButton" class="action-btn action-apply">✓ 应用更改</button>
-      </div>
     </main>
+
+    <!-- Toast -->
+    <div id="toast" class="toast" aria-live="polite"></div>
+
+    <!-- Error -->
+    <p id="errorMsg" class="error-msg"></p>
+
     <script type="module" src="./popup.js"></script>
   </body>
 </html>
