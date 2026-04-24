@@ -1,8 +1,19 @@
-# Tab Mask · 标签页重命名
+<div align="center">
 
-> 有时候，你只是不想让标签页标题干扰你的专注状态。
+# 🏷️ Tab Mask · 标签页重命名
+
+**给浏览器标签页起个你自己才懂的名字。**
+
+[![Version](https://img.shields.io/badge/version-0.3.0-0F4D40?style=flat-square)](https://github.com/jasonlynn6688/tabMask/releases)
+[![License](https://img.shields.io/badge/license-MIT-0F4D40?style=flat-square)](LICENSE)
+[![Manifest](https://img.shields.io/badge/Chrome-Manifest%20V3-0F4D40?style=flat-square&logo=googlechrome&logoColor=white)](https://developer.chrome.com/docs/extensions/mv3/intro/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-0F4D40?style=flat-square)](https://github.com/jasonlynn6688/tabMask/pulls)
+
+<br/>
 
 ![demo](assets/tabmask_demo.gif)
+
+</div>
 
 ---
 
@@ -18,6 +29,7 @@
 - **智能建议** — 自动推荐几个简洁的备选名称
 - **历史记录** — 上次用过的名字，下次一键复用
 - **恢复原名** — 随时一键还原
+- **键盘优先** — `Enter` 应用 / `Esc` 清空 / `Ctrl+1–9`（Mac: `⌘+1–9`）快选
 
 ## 安装
 
@@ -32,10 +44,10 @@
 
 1. 在任意普通网页点击扩展图标
 2. 从建议中挑一个，或者自己输入
-3. 点「应用更改」
+3. 按 `Enter` 或点「应用」
 4. 弹窗关闭，标签页已改名 ✓
 
-想恢复原名？再打开插件点「恢复默认」。
+想恢复原名？打开插件点「恢复原标题」，弹窗自动关闭。
 
 ## 支持的页面
 
@@ -48,6 +60,10 @@
 node --test tests/
 ```
 
+## Contributing
+
+欢迎提 Issue 和 PR。有想法直接开 Discussion 聊。
+
 ## License
 
-MIT
+[MIT](LICENSE) © 2026 jasonlynn6688
