@@ -261,7 +261,11 @@ async function restoreMask() {
 maskTitleInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
-    if (!applyButton.disabled) applyMaskTitle();
+    // Check directly — don't rely on applyButton.disabled which may lag
+    const v = sanitizeMaskTitle(maskTitleInput.value);
+    if (v && activeTabSupported && currentTab?.id) {
+      applyMaskTitle().catch(console.error);
+    }
   } else if (e.key === "Escape") {
     e.preventDefault();
     maskTitleInput.value = "";
@@ -287,6 +291,14 @@ restoreButton.addEventListener("click", () => restoreMask().catch(console.error)
 
 // ── Init ──
 toast.classList.add("hidden");
+
+// Platform-aware shortcut hint
+const isMac = navigator.platform.toUpperCase().includes("MAC");
+const chipsHint = document.querySelector("#chipsHint");
+if (chipsHint) {
+  const modKey = isMac ? "⌘" : "Ctrl";
+  chipsHint.innerHTML = `<kbd>${modKey}+1–9</kbd> 快选`;
+}
 syncPopupState().catch((err) => {
   console.error("Init failed:", err);
   activeTabSupported = false;
