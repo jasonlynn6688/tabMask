@@ -19,7 +19,6 @@
   const MESSAGE_TYPES = {
     GET_MASK_RULE: "GET_MASK_RULE",
     MASK_TITLE_CLEARED: "MASK_TITLE_CLEARED",
-    MASK_TITLE_UPDATED: "MASK_TITLE_UPDATED",
   };
 
   let state = {
@@ -135,6 +134,13 @@
     setMaskedFavicon();
   }
 
+  globalThis.__tabMaskApplyRule = (rule) => {
+    applyRule(rule);
+    return {
+      applied: true,
+    };
+  };
+
   function disableMask() {
     if (!state.enabled) {
       return;
@@ -159,6 +165,13 @@
 
     writeFavicons(nextFaviconState.restoredFavicons, false);
   }
+
+  globalThis.__tabMaskClearRule = () => {
+    disableMask();
+    return {
+      cleared: true,
+    };
+  };
 
   function handleObservedTitle() {
     if (internalWriteDepth > 0 || !state.enabled || !isSupportedMaskableUrl(location.href)) {
@@ -238,14 +251,6 @@
   }
 
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-    if (message?.type === MESSAGE_TYPES.MASK_TITLE_UPDATED && message.rule) {
-      applyRule(message.rule);
-      sendResponse({
-        applied: true,
-      });
-      return;
-    }
-
     if (message?.type === MESSAGE_TYPES.MASK_TITLE_CLEARED) {
       disableMask();
       sendResponse({

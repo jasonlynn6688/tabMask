@@ -13,7 +13,6 @@ const MESSAGE_TYPES = {
   GET_MASK_RULE: "GET_MASK_RULE",
   GET_TAB_STATE: "GET_TAB_STATE",
   MASK_TITLE_CLEARED: "MASK_TITLE_CLEARED",
-  MASK_TITLE_UPDATED: "MASK_TITLE_UPDATED",
 };
 
 async function notifyTab(tabId, message, { allowMissingReceiver = false } = {}) {
@@ -38,6 +37,20 @@ async function ensureContentScriptInjected(tabId) {
   });
 }
 
+async function applyRuleInTab(tabId, rule) {
+  const results = await chrome.scripting.executeScript({
+    target: { tabId },
+    func: (nextRule) => globalThis.__tabMaskApplyRule?.(nextRule) ?? null,
+    args: [rule],
+  });
+
+  const result = results?.[0]?.result;
+  if (!result?.applied) {
+    throw new Error("Tab script did not apply the update.");
+  }
+
+  return result;
+}
 
 async function notifyTabWithRetry(tabId, message) {
   const firstTry = await notifyTab(tabId, message, {
@@ -121,14 +134,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         await setRecentMaskTitle(rule.maskTitle);
         try {
           await ensureContentScriptInjected(message.tabId);
+          await applyRuleInTab(message.tabId, rule);
         } catch (error) {
           await clearMaskRule(message.tabId);
           throw error;
         }
-        await notifyTabWithRetry(message.tabId, {
-          type: MESSAGE_TYPES.MASK_TITLE_UPDATED,
-          rule,
-        });
         sendResponse({
           type: "MASK_ACTIVE",
           recentMaskTitle: rule.maskTitle,
@@ -198,10 +208,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
     try {
       await ensureContentScriptInjected(tabId);
-      await notifyTabWithRetry(tabId, {
-        type: MESSAGE_TYPES.MASK_TITLE_UPDATED,
-        rule: refreshedRule,
-      });
+      await applyRuleInTab(tabId, refreshedRule);
     } catch (error) {
       await clearMaskRule(tabId);
       throw error;
