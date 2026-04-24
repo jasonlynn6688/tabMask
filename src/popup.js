@@ -249,6 +249,7 @@ async function restoreMask() {
     maskedBadge.classList.add("hidden");
     showToast("✓ 已恢复为原标题");
     syncInput();
+    setTimeout(() => window.close(), 800);
   } catch (err) {
     showError(err instanceof Error ? err.message : "恢复失败，请重试。");
   } finally {
